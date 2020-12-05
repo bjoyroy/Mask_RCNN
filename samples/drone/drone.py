@@ -142,16 +142,19 @@ class DroneDataset(utils.Dataset):
             # Unfortunately, VIA doesn't include it in JSON, so we must read
             # the image. This is only managable since the dataset is tiny.
             image_path = os.path.join(dataset_dir, a['filename'])
-            image = skimage.io.imread(image_path)
-            height, width = image.shape[:2]
+            try:
+                image = skimage.io.imread(image_path)
+                height, width = image.shape[:2]
+                self.add_image(
+                    "drone",
+                    image_id=a['filename'],  # use file name as a unique image id
+                    path=image_path,
+                    width=width, height=height,
+                    polygons=polygons,
+                    class_ids=class_ids)
+            except:
+                print("Image reading failed. Image Path: " + image_path)
 
-            self.add_image(
-                "drone",
-                image_id=a['filename'],  # use file name as a unique image id
-                path=image_path,
-                width=width, height=height,
-                polygons=polygons,
-                class_ids=class_ids)
 
     def load_mask(self, image_id):
         """Generate instance masks for an image.
