@@ -215,7 +215,7 @@ class DroneDataset(utils.Dataset):
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID only, we return an array of 1s
         #return mask.astype(np.bool), np.ones([mask.shape[-1]], dtype=np.int32)
-        return mask.astype(np.bool), class_ids
+        return mask.astype(np.bool), np.asarray(class_ids, dtype='int32')
 
     def image_reference(self, image_id):
         """Return the path of the image."""
