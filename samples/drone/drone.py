@@ -68,11 +68,42 @@ class DroneConfig(Config):
     # Number of classes (including background)
     NUM_CLASSES = 1 + 5  # Background + Thread + Nut + Head + Pin + Washer
 
-    # Number of training steps per epoch
-    STEPS_PER_EPOCH = 100
+    ###################################################################################
+    BACKBONE = "resnet50"
 
-    # Skip detections with < 90% confidence
-    DETECTION_MIN_CONFIDENCE = 0.9
+    # Length of square anchor side in pixels
+    RPN_ANCHOR_SCALES = (16, 32, 64, 128, 256)
+
+    # Non-max suppression threshold to filter RPN proposals.
+    # You can increase this during training to generate more propsals.
+    RPN_NMS_THRESHOLD = 0.6
+
+    # How many anchors per image to use for RPN training
+    RPN_TRAIN_ANCHORS_PER_IMAGE = 512
+
+    # Percent of positive ROIs used to train classifier/mask heads
+    ROI_POSITIVE_RATIO = 0.6
+
+    #     IMAGE_MIN_DIM = 512
+    #     IMAGE_MAX_DIM = 1024
+
+    # Number of ROIs per image to feed to classifier/mask heads
+    # The Mask RCNN paper uses 512 but often the RPN doesn't generate
+    # enough positive proposals to fill this and keep a positive:negative
+    # ratio of 1:3. You can increase the number of proposals by adjusting
+    # the RPN NMS threshold.
+    TRAIN_ROIS_PER_IMAGE = 512
+
+    # Max number of final detections
+    DETECTION_MAX_INSTANCES = 100
+
+    # Minimum probability value to accept a detected instance
+    # ROIs below this threshold are skipped
+    DETECTION_MIN_CONFIDENCE = 0.7
+
+    # Non-maximum suppression threshold for detection
+    DETECTION_NMS_THRESHOLD = 0.4
+    pass
 
 
 ############################################################
@@ -87,14 +118,14 @@ class DroneDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("drone", 1, "Thread")
-        self.add_class("drone", 2, "Nut")
-        self.add_class("drone", 3, "Head")
-        self.add_class("drone", 4, "Pin")
-        self.add_class("drone", 5, "Washer")
+        self.add_class("drone", 1, "Head")
+        self.add_class("drone", 2, "Thread")
+        self.add_class("drone", 3, "Nut")
+        self.add_class("drone", 4, "Washer")
+        self.add_class("drone", 5, "Pin")
 
         # list of classes to train
-        class_dict = {"Head": 1, "Nut": 2, "Pin": 3, "Thread": 4, "Washer": 5}
+        class_dict = {"Head": 1, "Nut": 3, "Pin": 5, "Thread": 2, "Washer": 4}
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
