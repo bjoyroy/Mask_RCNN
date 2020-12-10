@@ -123,12 +123,13 @@ class DroneDataset(utils.Dataset):
         self.add_class("drone", 3, "Nut")
         self.add_class("drone", 4, "Washer")
         self.add_class("drone", 5, "Pin")
+        self.add_class("drone", 6, "Bolt")
 
         # list of classes to train
-        class_dict = {"Head": 1, "Nut": 3, "Pin": 5, "Thread": 2, "Washer": 4}
+        class_dict = {"Head": 1, "Nut": 3, "Pin": 5, "Thread": 2, "Washer": 4, "Bolt": 6}
 
-        # Train or validation dataset?
-        assert subset in ["train", "val"]
+        # Train, validation, or test dataset?
+        assert subset in ["train", "val", "test"]
         dataset_dir = os.path.join(dataset_dir, subset)
 
         # Load annotations
